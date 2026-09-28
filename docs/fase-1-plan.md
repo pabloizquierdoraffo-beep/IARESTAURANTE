@@ -11,6 +11,24 @@ Fecha: 28 de septiembre de 2026
 
 ---
 
+## Decisiones tomadas (28 de septiembre de 2026)
+
+| Pregunta | Respuesta | Qué significa |
+|---|---|---|
+| ¿Dónde van los servidores? | **Empresa europea** (Scaleway u OVH) | No se contrata nada hasta que lo confirmes y veamos el precio. |
+| ¿Por dónde llegan los mensajes? | **WhatsApp**, con **SMS de reserva** | Habrá que verificar la empresa en Meta antes de la fase 4. |
+| ¿Hay documentación del TPV? | **No, hay que pedirla** | Correo preparado en [correo-fabricante-tpv.md](correo-fabricante-tpv.md). |
+| ¿Estudio y prototipo? | **No están ahora** | Seguimos con este plan; se revisa cuando lleguen. |
+| ¿Copia de 12 meses de un bar? | **Aún no hay ningún bar** | La fase 3 (previsión) queda en espera. Texto para pedirla en [texto-buscar-hosteleros.md](texto-buscar-hosteleros.md). |
+| ¿Nombre comercial? | **Todavía no** | Usamos un nombre provisional. |
+| ¿Existe la empresa? | **Sí** | Servirá para verificarla en Meta. |
+| ¿Quién da soporte? | **Sin decidir** | De momento, número de ejemplo marcado como tal. |
+| ¿Quién programa? | **Claude**, y tú revisas | Cada paso termina con una explicación de cómo comprobarlo. |
+| ¿Cómo ves los avances? | **Enlace privado para el móvil** | Sin contratar servidores todavía. |
+| ¿Hay hosteleros para probar? | **Ninguno aún** | Texto para pedirlo en [texto-buscar-hosteleros.md](texto-buscar-hosteleros.md). |
+
+---
+
 ## 1. El encargo en pocas palabras
 
 Queremos un servicio que, cada lunes, mande al dueño de un bar un mensaje de WhatsApp
