@@ -26,6 +26,10 @@ Fecha: 28 de septiembre de 2026
 | ¿Quién programa? | **Claude**, y tú revisas | Cada paso termina con una explicación de cómo comprobarlo. |
 | ¿Cómo ves los avances? | **Enlace privado para el móvil** | Sin contratar servidores todavía. |
 | ¿Hay hosteleros para probar? | **Ninguno aún** | Texto para pedirlo en [texto-buscar-hosteleros.md](texto-buscar-hosteleros.md). |
+| ¿Solo este TPV? | **No: preparado para cualquier TPV** (BDP, Ágora, Hiopos, Soltac, Firesoft, Ticsy, Numier…) | Base común + un adaptador por TPV; primero el actual. Ver [arquitectura](arquitectura-multi-tpv-y-modulos.md) y [TPV del mercado](tpv-del-mercado.md). |
+| ¿Archivos exportados a mano? | **No, solo conexión automática** | Si un TPV no tiene integración oficial, no se conecta. |
+| ¿Mermas? | **Hoy no se rellenan en el TPV** | Irán en un módulo de nuestra plataforma. |
+| ¿Módulos extra? | **Sí, cada uno se cobra aparte**: escandallos, mermas y compras, stock, procesos del equipo, personal según la demanda, «releve» | Después del MVP; la base queda preparada desde ya. Para cualquier empleado con permisos, en el móvil, el ordenador o la tableta. |
 
 ---
 
@@ -389,4 +393,6 @@ Para empezar la fase 2 necesito, como mínimo:
 | 12 meses, comparación con referencia y con el hostelero, WAPE, rangos, motivos, cambios bruscos | §8.2 |
 | Separación de clientes, sin datos personales, UE, cifrado, RGPD art. 28, IA, WhatsApp | §9 |
 | Costes, riesgos, lo que necesitamos | §6, §10, §11 |
-| Fuera del MVP (pedidos automáticos, turnos completos, chat abierto, otros TPV, cobro automático) | No se incluye nada de esto |
+| Fuera del MVP (pedidos automáticos, turnos completos, chat abierto, cobro automático) | No se incluye nada de esto |
+| Otros TPV | La base común entra en el MVP; en el piloto solo se conecta el TPV actual |
+| Módulos de pago (escandallos, mermas y compras, stock, equipo, personal) | Después del MVP; tablas de módulos y permisos preparadas desde la fase 2 |
