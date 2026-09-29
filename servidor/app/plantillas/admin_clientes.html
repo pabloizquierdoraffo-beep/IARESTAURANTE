@@ -1,0 +1,27 @@
+{% extends "base_admin.html" %}
+{% block titulo %}Clientes{% endblock %}
+{% block contenido %}
+<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+  <h1>Clientes</h1><a class="btn principal pequeno" href="/admin/alta">Dar de alta un bar</a>
+</div>
+<div class="tabla-caja">
+  <table>
+    <thead><tr><th>Bar</th><th>Estado</th><th>Plan</th><th class="num">Cuota</th><th>Acierto</th><th>Mensajes leídos</th><th>Últimos datos</th><th>Módulos</th></tr></thead>
+    <tbody>
+    {% for c in clientes %}
+      <tr>
+        <td><a href="/admin/clientes/{{ c.id }}">{{ c.nombre }}</a><br><span class="suave">{{ c.municipio }} · {{ c.n_locales }} local{{ 'es' if c.n_locales != 1 }}</span></td>
+        <td><span class="chip {{ c.estado_tipo }}">{{ c.estado_texto }}</span></td>
+        <td>{{ c.plan_nombre }}</td>
+        <td class="num">{{ c.cuota|euros if c.cuota else 'Gratis' }}</td>
+        <td class="suave">Aún sin medir</td>
+        <td>{{ c.ultimos_leidos }} de {{ c.ultimos_mensajes }}</td>
+        <td>{% if c.ultimo_envio %}{{ c.ultimo_envio.strftime('%d/%m %H:%M') }}{% else %}—{% endif %}</td>
+        <td>{{ c.modulos|join(', ') if c.modulos else '—' }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+<p class="suave">El acierto de la previsión se medirá desde la fase 3.</p>
+{% endblock %}

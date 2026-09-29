@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block cuerpo %}
+<main class="pagina">
+  {% if locales and locales|length > 1 %}
+  <form class="cabecera" method="get" action="{{ ruta }}">
+    <label for="local" class="etiqueta">Local</label>
+    <div class="fila">
+      <select id="local" name="local" style="flex:1 1 200px">
+        {% for l in locales %}<option value="{{ l.id }}" {% if l.id == local.id %}selected{% endif %}>{{ l.nombre }}</option>{% endfor %}
+      </select>
+      <button class="btn pequeno" type="submit">Cambiar</button>
+    </div>
+  </form>
+  {% elif local %}
+  <p class="etiqueta">{{ local.nombre }}</p>
+  {% endif %}
+  {% block contenido %}{% endblock %}
+</main>
+<nav class="nav" style="--n: {{ 5 if bar.rol == 'dueno' else 2 }}" aria-label="Menú">
+  {% if bar.rol == 'dueno' %}
+  {% for clave, texto in [('semana','Semana'),('avisar','Avisar'),('ahorro','Ahorro'),('modulos','Módulos'),('ayuda','Ayuda')] %}
+  <a href="/{{ clave }}" {% if seccion == clave %}aria-current="page"{% endif %}>{{ texto }}</a>
+  {% endfor %}
+  {% else %}
+  <a href="/empleado" {% if seccion == 'empleado' %}aria-current="page"{% endif %}>Inicio</a>
+  <a href="/ayuda" {% if seccion == 'ayuda' %}aria-current="page"{% endif %}>Ayuda</a>
+  {% endif %}
+</nav>
+{% endblock %}

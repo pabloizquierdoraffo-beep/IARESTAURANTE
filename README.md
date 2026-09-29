@@ -2,7 +2,12 @@
 
 Plataforma de previsión de ventas con IA para bares y restaurantes.
 
-Estado: **Fase 2 en marcha**. Ya está programado el primer [conector](conector/README.md) (DSTNet), con pruebas automáticas.
+Estado: **Fase 2 en marcha**. Programado y probado:
+
+- el [conector](conector/README.md) que va en el bar (DSTNet);
+- el [servidor](servidor/README.md) con las entradas del bar y de la administración.
+
+Falta la previsión real (fase 3), WhatsApp (fase 4) y ponerlo en internet.
 
 - [Prototipo para tocar (datos de ejemplo)](prototipo/index.html) · enlace privado: https://claude.ai/artifact/SWQpw41jY2eTzEnk9k1eet
 - [Plan de la fase 1](docs/fase-1-plan.md)

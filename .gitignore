@@ -9,3 +9,7 @@ TestResults/
 *.mdf
 *.ldf
 *.7z
+
+# Python
+__pycache__/
+.pytest_cache/

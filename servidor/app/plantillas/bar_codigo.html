@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block titulo %}Código{% endblock %}
+{% block cuerpo %}
+<main class="pagina">
+  <h1>Escribe el código</h1>
+  <p class="suave">Si el {{ movil }} está dado de alta, te hemos enviado un código de 6 números. Dura 10 minutos.</p>
+  {% if codigo_prueba %}<p class="codigo-prueba"><strong>Solo en la versión de pruebas:</strong> tu código es {{ codigo_prueba }}. En la versión real llega por WhatsApp.</p>{% endif %}
+  {% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
+  <form method="post" action="/entrar/codigo" class="tarjeta">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <label for="codigo" class="etiqueta">Código</label>
+    <input id="codigo" name="codigo" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required>
+    <button class="btn principal" type="submit">Entrar</button>
+  </form>
+  <a class="btn" href="/entrar">Pedir otro código</a>
+</main>
+{% endblock %}

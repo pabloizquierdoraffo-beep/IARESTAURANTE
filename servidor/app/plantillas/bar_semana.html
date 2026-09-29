@@ -1,0 +1,44 @@
+{% extends "base_bar.html" %}
+{% block titulo %}Semana{% endblock %}
+{% block contenido %}
+{% if prevision %}
+  <h1>{{ prevision.semana_inicio|semana_titulo }}</h1>
+  {% if prevision.es_ejemplo %}<p class="codigo-prueba">Previsión de ejemplo. La previsión real llegará cuando tengamos tus ventas.</p>{% endif %}
+  <section class="pila" aria-label="Lo más importante">
+    {% for c in prevision.consejos %}
+    <article class="tarjeta consejo">
+      <span class="etiqueta">{{ c.etiqueta }}</span>
+      <p class="grande">{{ c.texto }}</p>
+      <p class="porque">{{ c.porque }}</p>
+    </article>
+    {% endfor %}
+    <div class="fila">
+      <a class="btn principal" href="/avisar">Tengo un evento</a>
+      <a class="btn" href="/ayuda">Llamadme</a>
+    </div>
+    {% include "aviso_ia.html" %}
+  </section>
+  <section class="pila" aria-label="Día a día">
+    <h2>Día a día</h2>
+    {% for d in prevision.dias %}
+    <details class="dia">
+      <summary>
+        <span class="nombre">{{ d.fecha|a_fecha|dia_corto }}</span>
+        <span class="chip {{ d.nivel }}">{{ {'mas':'Más gente','menos':'Menos gente','normal':'Normal'}[d.nivel] }}</span>
+        <span class="suave">{{ d.tiempo }}</span>
+        <span class="num">{{ d.clientes_min }} – {{ d.clientes_max }} clientes</span>
+      </summary>
+      <div class="detalle"><div class="linea"><span>Horas fuertes</span><strong>{{ d.franjas }}</strong></div></div>
+    </details>
+    {% endfor %}
+    <p class="ia">Tiempo: fuente AEMET.</p>
+  </section>
+{% else %}
+  <h1>Tu semana</h1>
+  <section class="tarjeta">
+    <p class="grande"><strong>Aún no hay previsión para este local.</strong></p>
+    <p>Necesitamos las ventas de tu caja de al menos 12 meses. En cuanto las tengamos, cada lunes te llegará la previsión por WhatsApp y la verás aquí.</p>
+  </section>
+  <a class="btn principal" href="/avisar">Avisar de un evento</a>
+{% endif %}
+{% endblock %}

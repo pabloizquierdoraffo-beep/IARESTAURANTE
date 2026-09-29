@@ -1,0 +1,38 @@
+{% extends "base_bar.html" %}
+{% block titulo %}Avisar{% endblock %}
+{% block contenido %}
+<h1>Avisar</h1>
+<section class="pila">
+  <h2>1. ¿Qué día?</h2>
+  <div class="opciones">
+    {% for d in dias[:7] %}
+    <a class="btn" href="/avisar?fecha={{ d.isoformat() }}" {% if fecha == d %}aria-current="true" style="background:var(--ink);color:var(--bg)"{% endif %}>{{ d|dia_corto }}</a>
+    {% endfor %}
+  </div>
+  <details><summary class="suave">Más días</summary>
+    <div class="opciones" style="margin-top:10px">
+      {% for d in dias[7:] %}<a class="btn" href="/avisar?fecha={{ d.isoformat() }}">{{ d|dia_corto }}</a>{% endfor %}
+    </div>
+  </details>
+</section>
+<section class="pila">
+  <h2>2. ¿Qué pasa?</h2>
+  {% if fecha %}
+  <p class="suave">Para el {{ fecha|dia_largo }}:</p>
+  <form method="post" action="/avisar/preparar" class="opciones">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <input type="hidden" name="fecha" value="{{ fecha.isoformat() }}">
+    {% for m in motivos %}<button class="btn" type="submit" name="motivo" value="{{ m }}">{{ m }}</button>{% endfor %}
+  </form>
+  {% else %}
+  <p class="suave">Primero toca el día.</p>
+  {% endif %}
+</section>
+<form method="post" action="/avisar/escrito" class="tarjeta">
+  <input type="hidden" name="csrf" value="{{ csrf }}">
+  <label for="texto"><h3>O cuéntalo con tus palabras</h3></label>
+  <textarea id="texto" name="texto" maxlength="500" placeholder="Por ejemplo: el viernes tengo una comunión de 60"></textarea>
+  <button class="btn principal" type="submit">Enviar</button>
+  <p class="suave">Pronto también por audio en WhatsApp.</p>
+</form>
+{% endblock %}

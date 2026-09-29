@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block cuerpo %}
+<main class="pagina ancha">
+  <div class="admin">
+    <nav aria-label="Administración">
+      {% for clave, texto, ruta in [('resumen','Resumen','/admin'),('clientes','Clientes','/admin/clientes'),('alta','Dar de alta','/admin/alta'),('conectores','Conectores','/admin/conectores'),('planes','Planes y módulos','/admin/planes')] %}
+      <a href="{{ ruta }}" {% if seccion == clave %}aria-current="page"{% endif %}>{{ texto }}</a>
+      {% endfor %}
+      <a href="/admin/salir">Salir</a>
+      <p class="suave" style="font-size:0.85rem;padding:8px 12px">{{ admin.email }}<br>{{ 'Administrador' if admin.rol == 'admin' else 'Comercial / soporte' }}</p>
+    </nav>
+    <div class="contenido">{% block contenido %}{% endblock %}</div>
+  </div>
+</main>
+{% endblock %}

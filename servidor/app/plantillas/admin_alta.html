@@ -1,0 +1,19 @@
+{% extends "base_admin.html" %}
+{% block titulo %}Dar de alta{% endblock %}
+{% block contenido %}
+<h1>Dar de alta un bar</h1>
+<p class="suave">Al darlo de alta empieza la prueba gratis de 2 meses.</p>
+{% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
+<form method="post" action="/admin/alta" class="tarjeta formulario">
+  <input type="hidden" name="csrf" value="{{ csrf }}">
+  <label for="nombre">Nombre del bar<input id="nombre" name="nombre" type="text" required value="{{ datos.nombre or '' }}"></label>
+  <label for="municipio">Municipio<input id="municipio" name="municipio" type="text" required value="{{ datos.municipio or '' }}"></label>
+  <label for="contacto">Persona de contacto<input id="contacto" name="contacto" type="text" required value="{{ datos.contacto or '' }}"></label>
+  <label for="movil">Móvil<input id="movil" name="movil" type="tel" inputmode="tel" required value="{{ datos.movil or '' }}"></label>
+  <label for="plan">Plan<select id="plan" name="plan" class="campo">{% for p in planes %}<option value="{{ p.codigo }}" {% if datos.plan == p.codigo %}selected{% endif %}>{{ p.nombre }} · {{ p.precio_eur|euros }} al mes por local</option>{% endfor %}</select></label>
+  <label for="locales">Número de locales<input id="locales" name="locales" type="text" inputmode="numeric" value="{{ datos.locales or '1' }}"></label>
+  <label for="tpv">Programa de caja<select id="tpv" name="tpv" class="campo"><option>DSTNet</option></select></label>
+  <label class="casilla completo" for="rgpd"><input id="rgpd" name="rgpd" type="checkbox" value="si"> Contrato de protección de datos (RGPD, art. 28) firmado, incluida la cláusula de uso de las ventas para mejorar la IA común.</label>
+  <div class="completo"><button class="btn principal" type="submit">Dar de alta y empezar la prueba</button></div>
+</form>
+{% endblock %}

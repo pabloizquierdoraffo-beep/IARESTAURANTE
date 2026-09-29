@@ -1,0 +1,23 @@
+{% extends "base_bar.html" %}
+{% block titulo %}Confirmar aviso{% endblock %}
+{% block contenido %}
+<h1>¿Lo he entendido bien?</h1>
+<form method="post" action="/avisar/guardar" class="tarjeta confirmacion">
+  <input type="hidden" name="csrf" value="{{ csrf }}">
+  {% if texto %}<input type="hidden" name="texto" value="{{ texto }}"><p class="suave">Has escrito: «{{ texto }}»</p>{% endif %}
+  <label for="fecha" class="etiqueta">Día</label>
+  <select id="fecha" name="fecha" class="campo" required>
+    {% if not fecha %}<option value="">Elige el día</option>{% endif %}
+    {% for d in dias %}<option value="{{ d.isoformat() }}" {% if d == fecha %}selected{% endif %}>{{ d|dia_largo }}</option>{% endfor %}
+  </select>
+  <label for="motivo" class="etiqueta">Qué pasa</label>
+  <input id="motivo" name="motivo" type="text" maxlength="80" value="{{ motivo }}" required>
+  <label for="personas" class="etiqueta">Cuántas personas (si lo sabes)</label>
+  <input id="personas" name="personas" type="text" inputmode="numeric" value="{{ personas or '' }}">
+  <div class="fila">
+    <button class="btn principal" type="submit">Sí, es correcto</button>
+    <a class="btn" href="/avisar">Empezar de nuevo</a>
+  </div>
+  {% if texto %}<p class="ia">Lo ha entendido una inteligencia artificial. Revísalo antes de guardar.</p>{% endif %}
+</form>
+{% endblock %}

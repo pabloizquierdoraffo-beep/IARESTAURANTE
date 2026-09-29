@@ -1,0 +1,14 @@
+{% extends "base_admin.html" %}
+{% block titulo %}Planes y módulos{% endblock %}
+{% block contenido %}
+<h1>Planes y módulos</h1>
+<p class="suave">Planes de referencia. Prueba gratis de 2 meses y sin permanencia. El cobro automático llegará más adelante.</p>
+<div class="planes">
+  {% for p in planes %}<article class="tarjeta"><h3>{{ p.nombre }}</h3><p class="precio num">{{ p.precio_eur|euros }}</p><p class="suave">al mes por local</p></article>{% endfor %}
+</div>
+<h2>Módulos</h2>
+<div class="tabla-caja"><table>
+  <thead><tr><th>Módulo</th><th>Qué hace</th><th>Precio</th></tr></thead>
+  <tbody>{% for m in modulos %}<tr><td>{{ m.nombre }}</td><td style="white-space:normal">{{ m.descripcion }}</td><td>{{ 'Incluido' if m.incluido else 'Por decidir' }}</td></tr>{% endfor %}</tbody>
+</table></div>
+{% endblock %}

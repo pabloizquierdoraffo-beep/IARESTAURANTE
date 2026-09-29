@@ -1,0 +1,8 @@
+{% extends "base_admin.html" %}
+{% block titulo %}Conector creado{% endblock %}
+{% block contenido %}
+<h1>Conector creado</h1>
+<p class="error">Copia este token ahora y pásaselo al técnico del TPV. No se volverá a mostrar: no lo guardamos en ningún sitio.</p>
+<p class="token">{{ token }}</p>
+<a class="btn" href="/admin/clientes/{{ cliente_id }}">Volver a la ficha</a>
+{% endblock %}

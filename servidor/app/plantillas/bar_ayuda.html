@@ -1,0 +1,19 @@
+{% extends "base_bar.html" %}
+{% block titulo %}Ayuda{% endblock %}
+{% block contenido %}
+<h1>Ayuda</h1>
+<section class="tarjeta">
+  <span class="etiqueta">Llama o escribe a una persona</span>
+  <p><strong>{{ soporte_nombre }}</strong></p>
+  <p class="telefono">{{ soporte_telefono }}</p>
+  <p class="suave">El mismo número sirve para llamar y para WhatsApp.</p>
+</section>
+<section class="tarjeta">
+  <h2>Preguntas frecuentes</h2>
+  <details class="faq"><summary>¿De dónde sacáis los datos?</summary><p>De las ventas de tu caja, cada noche. Solo lo vendido por hora y producto. Nunca nombres de clientes ni de empleados.</p></details>
+  <details class="faq"><summary>¿Alguien más ve mis ventas?</summary><p>No. La IA aprende de muchos bares, pero ningún bar ve los datos de otro.</p></details>
+  <details class="faq"><summary>¿Y si la previsión falla?</summary><p>Siempre te damos un rango, no una cifra exacta. Si fallamos, cuéntanoslo en «Avisar» y la previsión aprende.</p></details>
+  <details class="faq"><summary>¿Tengo que instalar algo?</summary><p>No. Lo instala el técnico de tu caja. A ti te llega un WhatsApp cada lunes.</p></details>
+</section>
+<a class="btn" href="/salir">Salir</a>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block titulo %}Entrar{% endblock %}
+{% block cuerpo %}
+<main class="pagina">
+  <h1>Entrar</h1>
+  <p class="suave">Sin contraseña. Te mandamos un código por WhatsApp.</p>
+  {% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
+  <form method="post" action="/entrar" class="tarjeta">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <label for="movil" class="etiqueta">Tu móvil</label>
+    <input id="movil" name="movil" type="tel" inputmode="tel" autocomplete="tel" required placeholder="612345678">
+    <button class="btn principal" type="submit">Enviarme el código</button>
+  </form>
+</main>
+{% endblock %}

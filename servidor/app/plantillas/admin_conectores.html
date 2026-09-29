@@ -1,0 +1,17 @@
+{% extends "base_admin.html" %}
+{% block titulo %}Conectores{% endblock %}
+{% block contenido %}
+<h1>Conectores</h1>
+{% if conectores %}
+<div class="tabla-caja">
+  <table>
+    <thead><tr><th>Cliente</th><th>TPV</th><th>Últimos datos</th><th>Estado</th></tr></thead>
+    <tbody>{% for k in conectores %}
+      <tr><td><a href="/admin/clientes/{{ k.cliente_id }}">{{ k.cliente }}</a></td><td>{{ k.tpv }}</td>
+        <td>{% if k.ultimo_envio %}{{ k.ultimo_envio.strftime('%d/%m/%Y %H:%M') }}{% else %}Nunca{% endif %}</td>
+        <td><span class="chip {{ 'mal' if k.sin_datos else 'ok' }}">{{ 'Más de 24 h sin datos' if k.sin_datos else 'Funcionando' }}</span></td></tr>
+    {% endfor %}</tbody>
+  </table>
+</div>
+{% else %}<p>No hay conectores todavía.</p>{% endif %}
+{% endblock %}

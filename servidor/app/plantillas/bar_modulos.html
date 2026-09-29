@@ -1,0 +1,24 @@
+{% extends "base_bar.html" %}
+{% block titulo %}Módulos{% endblock %}
+{% block contenido %}
+<h1>Mis módulos</h1>
+{% if pedido %}<p class="nota">Apuntado. Te llamaremos para contártelo.</p>{% endif %}
+<section class="pila">
+  {% for m in modulos %}
+  <article class="tarjeta modulo">
+    <header><h3>{{ m.nombre }}</h3>
+      {% if m.incluido %}<span class="chip ok">Incluido</span>{% elif m.contratado %}<span class="chip ok">Contratado</span>{% else %}<span class="chip normal">Disponible</span>{% endif %}
+    </header>
+    <p>{{ m.descripcion }}</p>
+    {% if not m.incluido and not m.contratado %}
+    <form method="post" action="/modulos/informacion">
+      <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="modulo" value="{{ m.codigo }}">
+      <button class="btn" type="submit">Quiero información</button>
+    </form>
+    {% elif m.contratado %}
+    <p class="suave">Estamos preparando este módulo. Te avisaremos cuando esté listo.</p>
+    {% endif %}
+  </article>
+  {% endfor %}
+</section>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base_bar.html" %}
+{% block titulo %}Inicio{% endblock %}
+{% block contenido %}
+<h1>Hola, {{ bar.nombre }}</h1>
+<p class="suave">{{ cliente.nombre }}</p>
+<section class="tarjeta">
+  <h3>Lo que puedes usar</h3>
+  {% if permitidos %}
+  <div class="lista">{% for m in permitidos %}<div><span>{{ m.nombre }}</span><span class="chip normal">En preparación</span></div>{% endfor %}</div>
+  <p class="suave">El fichaje, los turnos y las vacaciones llegarán en una próxima versión, cumpliendo la ley del registro de jornada.</p>
+  {% else %}
+  <p>Todavía no tienes nada activado. Pídeselo a tu encargado.</p>
+  {% endif %}
+</section>
+<a class="btn" href="/salir">Salir</a>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends "base_admin.html" %}
+{% block titulo %}{{ c.nombre }}{% endblock %}
+{% block contenido %}
+{% set textos = {'alta': 'Cliente dado de alta. La prueba gratis dura hasta el ' ~ (c.prueba_hasta|dia_largo if c.prueba_hasta else '') ~ '.', 'mensaje': 'Mensaje de prueba enviado.', 'tecnico': 'Aviso al técnico registrado. El envío automático al fabricante del TPV llegará en la fase 4.', 'plan': 'Plan cambiado.', 'modulos': 'Módulos actualizados.'} %}
+{% if hecho in textos %}<p class="nota" role="status">{{ textos[hecho] }}</p>{% endif %}
+<header style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center">
+  <h1>{{ c.nombre }}</h1><span class="chip {{ c.estado_tipo }}">{{ c.estado_texto }}</span>
+</header>
+<p class="suave">{{ c.municipio }} · Plan {{ c.plan_nombre }} · Contacto: {{ c.contacto_nombre }} ({{ c.contacto_movil }}){% if c.prueba_hasta and c.estado == 'prueba' %} · Prueba gratis hasta el {{ c.prueba_hasta|dia_largo }}{% endif %}</p>
+
+<section class="tarjeta">
+  <h2>Acciones</h2>
+  <div class="fila">
+    <form method="post" action="/admin/clientes/{{ c.id }}/mensaje-prueba" class="enlinea"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn pequeno" type="submit">Enviar mensaje de prueba</button></form>
+    <form method="post" action="/admin/clientes/{{ c.id }}/avisar-tecnico" class="enlinea"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn pequeno" type="submit">Avisar al técnico del TPV</button></form>
+  </div>
+  {% if admin.rol == 'admin' %}
+  <form method="post" action="/admin/clientes/{{ c.id }}/plan" class="formulario">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <label for="plan">Cambiar de plan
+      <select id="plan" name="plan" class="campo">{% for p in planes %}<option value="{{ p.codigo }}" {% if p.codigo == c.plan %}selected{% endif %}>{{ p.nombre }} · {{ p.precio_eur|euros }}</option>{% endfor %}</select>
+    </label>
+    <div style="align-self:end"><button class="btn pequeno" type="submit">Guardar plan</button></div>
+  </form>
+  {% else %}<p class="suave">Solo un administrador puede cambiar el plan, los módulos y los conectores.</p>{% endif %}
+</section>
+
+<section class="tarjeta">
+  <h2>Módulos contratados</h2>
+  <form method="post" action="/admin/clientes/{{ c.id }}/modulos" class="pila">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    {% for m in modulos %}
+    <label class="casilla" for="m-{{ m.codigo }}"><input id="m-{{ m.codigo }}" type="checkbox" name="modulo_{{ m.codigo }}" value="si" {% if m.contratado %}checked{% endif %} {% if admin.rol != 'admin' %}disabled{% endif %}> {{ m.nombre }}</label>
+    {% endfor %}
+    {% if admin.rol == 'admin' %}<div><button class="btn pequeno" type="submit">Guardar módulos</button></div>{% endif %}
+  </form>
+</section>
+
+<section class="tarjeta">
+  <h2>Locales</h2>
+  <div class="lista">{% for l in locales %}<div><span>{{ l.nombre }}</span><span class="suave">{{ l.tpv }}{% if l.id_en_tpv %} · en el TPV: {{ l.id_en_tpv }}{% else %} · falta enlazar con el TPV{% endif %}</span></div>{% endfor %}</div>
+</section>
+
+<section class="tarjeta">
+  <h2>Personas</h2>
+  <div class="lista">{% for p in personas %}<div><span>{{ p.nombre }}</span><span class="suave">{{ 'Dueño' if p.rol == 'dueno' else 'Empleado' }} · {{ p.movil }}</span></div>{% endfor %}</div>
+</section>
+
+<section class="tarjeta">
+  <h2>Conectores</h2>
+  {% if conectores %}
+  <div class="lista">{% for k in conectores %}<div><span>{{ k.tpv }}</span><span class="suave">{% if k.ultimo_envio %}Últimos datos: {{ k.ultimo_envio.strftime('%d/%m/%Y %H:%M') }}{% else %}Aún no ha enviado datos{% endif %}</span></div>{% endfor %}</div>
+  {% else %}<p class="suave">Sin conector todavía.</p>{% endif %}
+  {% if admin.rol == 'admin' %}
+  <form method="post" action="/admin/clientes/{{ c.id }}/conector" class="fila">
+    <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="tpv" value="DSTNet">
+    <button class="btn pequeno" type="submit">Crear conector DSTNet</button>
+  </form>
+  {% endif %}
+</section>
+
+<section class="tarjeta">
+  <h2>Últimas acciones</h2>
+  {% if acciones %}
+  <div class="lista">{% for a in acciones %}<div><span>{{ a.accion }}{% if a.detalle %} · <span class="suave">{{ a.detalle }}</span>{% endif %}</span><span class="suave">{{ a.quien }} · {{ a.creado_en.strftime('%d/%m %H:%M') }}</span></div>{% endfor %}</div>
+  {% else %}<p class="suave">Nada todavía.</p>{% endif %}
+</section>
+{% endblock %}

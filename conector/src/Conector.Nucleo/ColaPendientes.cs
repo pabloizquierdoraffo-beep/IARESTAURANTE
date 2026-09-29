@@ -76,3 +76,25 @@ public sealed class EnvioSimuladoArchivo(string carpeta) : IEnvio
         await File.WriteAllTextAsync(Path.Combine(carpeta, nombre), json, ct);
     }
 }
+
+/// <summary>
+/// Envío real a la plataforma, cifrado (https) y con el token del conector.
+/// Si el servidor no contesta bien, lanza una excepción y el paquete se queda en la cola.
+/// </summary>
+public sealed class EnvioHttp(HttpClient http, Uri servidor, string token) : IEnvio
+{
+    public async Task EnviarAsync(string nombre, string json, CancellationToken ct = default)
+    {
+        using var peticion = new HttpRequestMessage(HttpMethod.Post, new Uri(servidor, "api/conector/v1/paquetes"))
+        {
+            Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json"),
+        };
+        peticion.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        using var respuesta = await http.SendAsync(peticion, ct);
+        if (!respuesta.IsSuccessStatusCode)
+        {
+            var detalle = await respuesta.Content.ReadAsStringAsync(ct);
+            throw new HttpRequestException($"El servidor rechazó el paquete ({(int)respuesta.StatusCode}): {detalle}");
+        }
+    }
+}

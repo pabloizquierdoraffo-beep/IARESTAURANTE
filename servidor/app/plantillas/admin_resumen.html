@@ -1,0 +1,25 @@
+{% extends "base_admin.html" %}
+{% block titulo %}Resumen{% endblock %}
+{% block contenido %}
+<h1>Resumen</h1>
+<div class="kpis">
+  <div class="kpi"><span class="etiqueta">Ingresos al mes</span><span class="valor num">{{ ingresos|euros }}</span><span class="suave">clientes activos</span></div>
+  <div class="kpi"><span class="etiqueta">Locales conectados</span><span class="valor num">{{ locales_conectados }}</span></div>
+  <div class="kpi"><span class="etiqueta">En prueba</span><span class="valor num">{{ en_prueba }}</span></div>
+  <div class="kpi"><span class="etiqueta">Necesitan atención</span><span class="valor num">{{ atencion }}</span></div>
+</div>
+<section class="tarjeta">
+  <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><span class="etiqueta">Hacia el punto de equilibrio</span><strong class="num">{{ locales_conectados }} de {{ equilibrio }} locales</strong></div>
+  <div class="medidor" role="img" aria-label="{{ locales_conectados }} de {{ equilibrio }} locales"><span style="width:{{ [100, (locales_conectados * 100 / equilibrio)|round|int]|min }}%"></span></div>
+</section>
+<section class="tarjeta">
+  <h2>Qué hay que hacer hoy</h2>
+  {% if tareas %}
+  <div>
+    {% for tipo, chip, texto, c in tareas %}
+    <div class="tarea"><span class="chip {{ tipo }}">{{ chip }}</span><span>{{ texto }}</span><a class="btn pequeno" href="/admin/clientes/{{ c.id }}">Ver ficha</a></div>
+    {% endfor %}
+  </div>
+  {% else %}<p>Nada urgente hoy.</p>{% endif %}
+</section>
+{% endblock %}

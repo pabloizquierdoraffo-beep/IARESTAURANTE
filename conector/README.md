@@ -21,7 +21,7 @@ nuestra plataforma. **Solo lee: nunca escribe en el TPV.**
 3. **Lista de campos permitidos:** antes de enviar, se comprueba que el paquete solo lleva campos
    del idioma común. Si apareciera un dato de empleados, clientes o pagos, no se envía.
 
-## Qué comprueban las pruebas (23)
+## Qué comprueban las pruebas (25)
 
 - Los totales de la copia de prueba cuadran: **84,50 €, 50 unidades, 27 tickets y 27 comensales**.
 - Las ventas se reparten bien por horas (9, 10, 11 y 12 h).
@@ -30,7 +30,9 @@ nuestra plataforma. **Solo lee: nunca escribe en el TPV.**
 - **El usuario del conector no puede escribir** en el TPV (se intenta y la base de datos lo impide).
 - Se rechazan las consultas que no son de lectura y los campos no permitidos.
 - **Sin internet no se pierde nada:** lo pendiente se guarda y se reenvía después, en orden.
-- Funciona de principio a fin: leer, guardar y enviar (el envío, por ahora, es simulado).
+- Funciona de principio a fin: leer, guardar y enviar.
+- El envío al servidor lleva el token del conector y, si el servidor falla, el paquete se queda en la cola.
+- Prueba real de la caja a la plataforma (opcional, con `CONECTOR_SERVIDOR_URL` y `CONECTOR_TOKEN`).
 
 ## Cómo ejecutar las pruebas (para un programador)
 
@@ -49,6 +51,6 @@ Sin la copia de prueba, las 6 pruebas que la necesitan se saltan y las demás se
 
 - Convertirlo en un **servicio de Windows** que arranque solo y se ejecute cada noche, y el
   aviso cuando deja de sincronizar (fase 4).
-- El **envío real** cifrado al servidor, cuando exista (paso D).
+- Configurar la dirección del servidor y el token en el servicio de Windows (fase 4).
 - Confirmar con DSTNet el significado de algunos campos (tipos de línea, menús, tarifas) y que
   podemos leer por su **integración oficial**.
