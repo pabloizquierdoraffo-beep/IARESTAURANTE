@@ -10,3 +10,4 @@ Estado: **Fase 1 – Plan** (todavía no hay nada programado).
 - [Qué hay en la copia de prueba del TPV](docs/mapa-datos-tpv.md)
 - [Cómo se conecta cualquier TPV y cómo funcionan los módulos](docs/arquitectura-multi-tpv-y-modulos.md)
 - [Programas de caja del mercado](docs/tpv-del-mercado.md)
+- [Visión del producto](docs/vision-producto.md)

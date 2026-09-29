@@ -22,7 +22,7 @@ Buscamos dueños o encargados de bar **que no conozcan el proyecto**.
 
 ## 2. Para pedir la copia de ventas de 12 meses (hace falta al menos 1 bar; mejor 2 o 3)
 
-Mejor un bar que use [nombre del TPV] y lleve **al menos un año** con él.
+Mejor un bar que use DSTNet y lleve **al menos un año** con él.
 
 > Hola [nombre]. Estamos probando una herramienta que calcula cuánto vas a vender cada día
 > de la semana, para pedir mejor y ajustar el personal.

@@ -1,4 +1,4 @@
-# Qué hay en la copia de prueba del TPV y qué datos usaremos
+# Qué hay en la copia de prueba del TPV (DSTNet) y qué datos usaremos
 
 > Revisado el 28 de septiembre de 2026 con la copia `Central_10.2.3_24092026_1039.bak`.
 > **La copia no se ha subido a GitHub** ni a ningún otro sitio: se abrió solo en un
@@ -8,6 +8,7 @@
 
 | Dato | Valor |
 |---|---|
+| TPV | **DSTNet**, versión «Central 10.2.3» |
 | Tipo de archivo | Un archivo comprimido (7-Zip) con dentro una copia de SQL Server llamada «Central» |
 | Tablas | 327 (casi todas vacías) |
 | Locales dados de alta | 2 |

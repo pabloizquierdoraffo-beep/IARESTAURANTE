@@ -29,7 +29,13 @@ Fecha: 28 de septiembre de 2026
 | ¿Solo este TPV? | **No: preparado para cualquier TPV** (BDP, Ágora, Hiopos, Soltac, Firesoft, Ticsy, Numier…) | Base común + un adaptador por TPV; primero el actual. Ver [arquitectura](arquitectura-multi-tpv-y-modulos.md) y [TPV del mercado](tpv-del-mercado.md). |
 | ¿Archivos exportados a mano? | **No, solo conexión automática** | Si un TPV no tiene integración oficial, no se conecta. |
 | ¿Mermas? | **Hoy no se rellenan en el TPV** | Irán en un módulo de nuestra plataforma. |
-| ¿Módulos extra? | **Sí, cada uno se cobra aparte**: escandallos, mermas y compras, stock, procesos del equipo, personal según la demanda, «releve» | Después del MVP; la base queda preparada desde ya. Para cualquier empleado con permisos, en el móvil, el ordenador o la tableta. |
+| ¿TPV actual? | **DSTNet** | Tixi también está en la lista de TPV a conectar. |
+| ¿Qué vendemos? | **Plataforma centralizada con IA, no un TPV**: predice las ventas y aprende de todos los restaurantes sin compartir sus datos | Ver [visión del producto](vision-producto.md). Texto comercial pendiente. |
+| ¿Autorización para el modelo común? | **Cláusula en el contrato de todos** | Debe revisarla un abogado. |
+| ¿Orden de los módulos? | 1) Turnos según la previsión, 2) preparación y descongelación, 3) escandallos, relevé y mermas, 4) empleados: fichaje, turnos y vacaciones | Relevé = escandallo actualizado a diario con lo perdido y las mermas. |
+| ¿Fichaje? | **Cumpliendo la ley** | Revisión con un asesor laboral antes de programarlo. |
+| ¿Responsabilidad? | **La decisión final es siempre del hostelero** | Aviso visible en cada recomendación; texto legal a cargo de un abogado. |
+| ¿Módulos extra? | **Sí, cada uno se cobra aparte**: turnos según la previsión, preparación y descongelación, escandallos, relevé y mermas, empleados (fichaje, turnos y vacaciones) | Después del MVP; la base queda preparada desde ya. Para cualquier empleado con permisos, en el móvil, el ordenador o la tableta. |
 
 ---
 
@@ -70,7 +76,7 @@ Hay **dos entradas** a la plataforma:
 Las ordeno de más a menos urgente.
 
 ### Sobre el TPV (lo más importante)
-1. **¿Cómo se llama el TPV?** En el encargo pone «[NOMBRE DEL TPV]».
+1. ~~¿Cómo se llama el TPV?~~ **Resuelto: DSTNet.**
 2. **¿Qué es exactamente la «integración oficial»?** No sé si es:
    - un programa o librería del fabricante que da los datos,
    - un usuario de base de datos de **solo lectura** con unas vistas preparadas,
@@ -374,7 +380,7 @@ Para empezar la fase 2 necesito, como mínimo:
 
 1. **¿Proveedor europeo (recomendado) o gran nube en región europea?**
 2. **¿Empezamos con WhatsApp** (con SMS de reserva) como canal principal?
-3. **Mandarme el estudio y el prototipo**, y el **nombre del TPV** con su documentación.
+3. **Mandarme el estudio y el prototipo**, y la documentación de DSTNet.
 
 ---
 

@@ -1,7 +1,7 @@
 # Correo para el fabricante del TPV
 
 > **Cómo usarlo:** copia el texto de abajo, cambia lo que está entre corchetes `[ ]` y
-> envíalo a vuestro contacto de partners del fabricante.
+> envíalo a vuestro contacto de partners de DSTNet. Sirve también para otros TPV cambiando el nombre.
 
 ---
 
@@ -9,7 +9,7 @@
 
 Hola, [nombre del contacto]:
 
-Como partners de [nombre del TPV], estamos preparando un servicio de previsión de ventas
+Como partners de DSTNet, estamos preparando un servicio de previsión de ventas
 para bares y restaurantes que usan vuestro programa. El servicio **solo necesita leer**
 las ventas: **nunca escribirá en la base de datos del TPV**.
 

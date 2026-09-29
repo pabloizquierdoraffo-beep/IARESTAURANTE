@@ -12,7 +12,7 @@ cada TPV, que pasa sus datos a **un idioma común**. A partir de ahí, toda la p
 
 ```
   TPV EN EL LOCAL                         TPV EN LA NUBE
-  (ej.: el actual, SQL Server)            (ej.: los que tienen API en internet)
+  (ej.: DSTNet, SQL Server)            (ej.: los que tienen API en internet)
 
   ┌─────────────┐                         ┌─────────────┐
   │ Caja del bar│                         │ Nube del TPV│
@@ -33,13 +33,14 @@ cada TPV, que pasa sus datos a **un idioma común**. A partir de ahí, toda la p
         │   · avisos del hostelero · ahorro            │
         │                                              │
         │  MÓDULOS DE PAGO (solo si están contratados) │
-        │   · escandallos     · mermas y compras       │
-        │   · stock           · procesos del equipo    │
-        │   · personal según la demanda                │
-        │   · «releve» (pendiente de definir)          │
+        │   1 turnos según la previsión y reservas     │
+        │   2 preparación y descongelación             │
+        │   3 escandallos, relevé y mermas             │
+        │   4 empleados: fichaje, turnos, vacaciones   │
         └─────────────────────────────────────────────┘
                          ▲
-     móvil · ordenador · tableta (cada empleado ve solo lo que le permiten)
+     nosotros · dueño · empleados
+     móvil · ordenador · tableta (cada uno ve solo lo que le permiten)
 ```
 
 ## 3. El idioma común (qué datos se traducen)
@@ -73,8 +74,12 @@ conecta.
 ## 5. Los módulos de pago
 
 - **Núcleo:** lo tienen todos los clientes (previsión, mensaje del lunes, avisos y ahorro).
-- **Módulos:** escandallos (qué lleva cada plato o bebida y cuánto cuesta), mermas y compras,
-  stock, procesos del equipo, personal según la demanda y «releve» (pendiente de definir).
+- **Módulos, en este orden:**
+  1. turnos según la previsión (y según haya más o menos reservas de lo previsto);
+  2. preparación y descongelación diaria;
+  3. escandallos (qué lleva cada plato o bebida y cuánto cuesta), **relevé** (el escandallo
+     actualizado cada día, con lo perdido y las mermas) y mermas y compras;
+  4. empleados: fichaje, turnos y vacaciones.
 - Del TPV se coge todo lo que haya; lo que el TPV no tenga o haga peor (por ejemplo, las
   mermas, que hoy nadie rellena) se gestiona en nuestra plataforma.
 - **Cada módulo se cobra aparte** cuando el cliente lo contrata. Los precios están por decidir.
@@ -83,7 +88,13 @@ conecta.
 - **Cuándo:** los módulos se construyen **después del MVP**. Desde ya, la base de datos tendrá
   preparadas las tablas de «módulos contratados» y «permisos» para no rehacer nada.
 
-## 6. Qué cambia respecto al plan inicial
+## 6. Un modelo común para todos los locales
+
+La previsión se entrena como **un solo modelo con las ventas de todos los locales**, que a la
+vez tiene en cuenta cómo es cada uno. Así «aprende de los demás» sin que ningún bar vea los
+datos de otro. Detalle en [visión del producto](vision-producto.md).
+
+## 7. Qué cambia respecto al plan inicial
 
 - «Otros TPV» ya no queda fuera del MVP: **la base común entra ahora**, aunque solo se conecta
   el TPV actual en el piloto.

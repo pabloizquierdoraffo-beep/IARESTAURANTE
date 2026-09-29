@@ -1,6 +1,6 @@
 # Programas de caja (TPV) del mercado: cómo conectarlos
 
-> Revisado el 28 de septiembre de 2026 con búsquedas en internet. Desde nuestro entorno de
+> Revisado el 28 y 29 de septiembre de 2026 con búsquedas en internet. Desde nuestro entorno de
 > trabajo **no se pudieron abrir las webs de los fabricantes**, así que lo que viene aquí
 > sale de los resultados de búsqueda y de las webs de sus distribuidores.
 > **Todo lo marcado «sin confirmar» hay que preguntarlo al fabricante.** Decisión tomada:
@@ -10,19 +10,19 @@
 
 | TPV | ¿Dice tener API o integraciones? | ¿Datos en el local o en la nube? | Siguiente paso |
 |---|---|---|---|
-| **TPV actual** (copia «Central 10.2.3») | Sí («integración oficial», somos partners) | En el local (SQL Server) | Pedir la documentación ([correo](correo-fabricante-tpv.md)) |
+| **DSTNet** (TPV actual; la copia es de «DSTnet Central 10.2.3») | Sí («integración oficial», somos partners) | En el local (SQL Server). Su versión **Central** junta en un servidor de oficina las ventas de varios locales en tiempo real | Pedir la documentación ([correo](correo-fabricante-tpv.md)) |
 | **Ágora** | **Sí**: API para ERP, contabilidad, PMS y e-commerce; tiene partners de gestión (Gstock, tSpoonLab) | Sin confirmar | Pedir acceso a la API de partners |
 | **Hiopos** | **Sí**: integraciones con Uber Eats, Glovo, Deliverect y FrontHotel. Tiene versión «Hiopos Cloud» | Tiene versión en la nube; sin confirmar para todos los clientes | Preguntar si hay API de ventas para terceros |
 | **Numier** | **Sí**: «API de integraciones» que conecta las ventas con programas externos | Sin confirmar | Pedir la documentación de la API |
 | **BDP** | Dice integrarse con ERP, CRM y e-commerce; **no se encontró una API pública** | Sin confirmar | Preguntar cómo se integran los ERP |
 | **Firesoft** | **No se encontró** información de API | Sin confirmar | Preguntar al fabricante |
 | **Soltac** | **No se encontró** información de API | Sin confirmar | Preguntar al fabricante |
-| **«Ticsy»** | Hay un TPV llamado **Ticksy** (ticksy.app) con integraciones; **hay que confirmar que es el mismo** | Sin confirmar | Confirmar el nombre y preguntar |
+| **Tixi** | **No se encontró** información pública con ese nombre | Sin confirmar | Pedirnos su web o contacto |
 
 ## Qué significa para nosotros
 
-- **Ágora, Hiopos y Numier** anuncian API: son los candidatos más fáciles después del TPV actual.
-- Para **BDP, Firesoft, Soltac y Ticksy** no hay información pública. Hay que preguntarles
+- **Ágora, Hiopos y Numier** anuncian API: son los candidatos más fáciles después de DSTNet.
+- Para **BDP, Firesoft, Soltac y Tixi** no hay información pública. Hay que preguntarles
   directamente. Si no ofrecen una integración oficial, **no nos conectaremos** a escondidas a su
   base de datos: la regla es usar solo la vía oficial.
 - Si un TPV guarda los datos **en la nube**, no hará falta instalar nada en el bar: nuestro
@@ -51,4 +51,5 @@ Se puede reutilizar el [correo para el fabricante](correo-fabricante-tpv.md), a�
   [Software TPV BDP (tpvcenter)](https://www.tpvcenter.com/software-tpv/software-tpv-bdp-hosteleria-comercio/)
 - Firesoft: [FireSoft Hostelería](https://firesoft.es/hosteleria)
 - Soltac: [Software TPV para Hostelería – Soltac](https://soltac.es/hosteleria.php)
-- Ticksy: [Ticksy](https://ticksy.app/)
+- DSTNet: [DSTnet TPV](https://www.dstnet.com/), [Software TPV hostelería | DSTnet](https://www.dstnet.com/software-tpv-hosteleria-profesional/), [Explorando DSTNet (Mundo Informática)](https://www.mundoinformatica.es/dstnet/)
+- Tixi: no se encontraron resultados con ese nombre.
