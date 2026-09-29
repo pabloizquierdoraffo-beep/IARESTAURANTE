@@ -1,0 +1,762 @@
+<title>Previsión para bares</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Barlow+Condensed:wght@600;700&display=swap">
+<style>
+/* Layout: una columna para el móvil (dueño y empleado); la administración se abre a lo ancho en ordenador. */
+:root {
+  --bg: #f3f5f2;
+  --surface: #ffffff;
+  --ink: #17201c;
+  --muted: #4d5a54;
+  --line: #cfd6d1;
+  --accent: #a4520a;
+  --accent-ink: #ffffff;
+  --accent-soft: #f7e6d2;
+  --ok: #1f6b3a;
+  --ok-soft: #dcefe2;
+  --warn: #8a5a00;
+  --warn-soft: #fbeccb;
+  --bad: #a02020;
+  --bad-soft: #f8dcdc;
+  --band: #17201c;
+  --band-ink: #fbe7a7;
+  --focus: #1b5fd1;
+  --display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --body: "Atkinson Hyperlegible", "Segoe UI", Verdana, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111613; --surface: #1b221e; --ink: #eef2ef; --muted: #b5c0ba; --line: #3a4540;
+    --accent: #f2a541; --accent-ink: #1a1206; --accent-soft: #3b2a14;
+    --ok: #7ed39a; --ok-soft: #173424; --warn: #f3c562; --warn-soft: #3a2e10; --bad: #ff8f8f; --bad-soft: #3d1818;
+    --band: #fbe7a7; --band-ink: #17201c; --focus: #8ab4ff;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111613; --surface: #1b221e; --ink: #eef2ef; --muted: #b5c0ba; --line: #3a4540;
+  --accent: #f2a541; --accent-ink: #1a1206; --accent-soft: #3b2a14;
+  --ok: #7ed39a; --ok-soft: #173424; --warn: #f3c562; --warn-soft: #3a2e10; --bad: #ff8f8f; --bad-soft: #3d1818;
+  --band: #fbe7a7; --band-ink: #17201c; --focus: #8ab4ff;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { background: var(--bg); }
+body { color: var(--ink); font-family: var(--body); font-size: 19px; line-height: 1.45; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+h1, h2, h3 { font-family: var(--display); line-height: 1.1; text-wrap: balance; margin: 0; letter-spacing: 0.01em; }
+h1 { font-size: 2.1rem; }
+h2 { font-size: 1.7rem; }
+h3 { font-size: 1.35rem; }
+p { margin: 0; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+.banda {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10;
+  background: var(--band); color: var(--band-ink);
+  font-weight: 700; font-size: 0.85rem; letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 6px 16px; text-align: center;
+}
+.pagina { max-width: 560px; margin: 0 auto; padding-inline: 16px; padding-block: 20px 120px; display: grid; gap: 20px; }
+.pagina.ancha { max-width: 1180px; padding-bottom: 40px; }
+
+.btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 60px; padding: 12px 18px; border-radius: 12px;
+  border: 2px solid var(--ink); background: var(--surface); color: var(--ink);
+  font-weight: 700; font-size: 1.05rem; cursor: pointer; text-align: center;
+}
+.btn.principal { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn.pequeno { min-height: 44px; font-size: 0.95rem; padding: 8px 14px; }
+.btn[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.fila { display: flex; flex-wrap: wrap; gap: 10px; }
+.fila > .btn { flex: 1 1 140px; }
+.pila { display: grid; gap: 12px; }
+
+.tarjeta { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; display: grid; gap: 10px; min-width: 0; }
+.etiqueta { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.suave { color: var(--muted); }
+.porque { color: var(--muted); font-size: 0.95rem; }
+.ia { font-size: 0.9rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 10px; }
+
+.chip { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 0.85rem; font-weight: 700; white-space: nowrap; }
+.chip.mas { background: var(--accent-soft); color: var(--accent); }
+.chip.menos { background: var(--ok-soft); color: var(--ok); }
+.chip.normal { background: var(--bg); color: var(--muted); border: 1px solid var(--line); }
+.chip.ok { background: var(--ok-soft); color: var(--ok); }
+.chip.aviso { background: var(--warn-soft); color: var(--warn); }
+.chip.mal { background: var(--bad-soft); color: var(--bad); }
+
+/* Inicio */
+.portada { display: grid; gap: 14px; }
+.portada .btn { min-height: 84px; font-size: 1.25rem; justify-content: flex-start; text-align: left; flex-direction: column; align-items: flex-start; gap: 2px; }
+.portada .btn small { font-weight: 400; font-size: 0.95rem; color: inherit; opacity: 0.85; }
+
+/* Cabecera móvil */
+.cabecera { display: grid; gap: 8px; }
+.cabecera select { min-height: 52px; border-radius: 10px; border: 2px solid var(--line); background: var(--surface); padding: 8px 12px; font-weight: 700; width: 100%; }
+
+/* Navegación inferior */
+.nav {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
+  background: var(--surface); border-top: 2px solid var(--line);
+  padding: 6px 6px calc(6px + env(safe-area-inset-bottom, 0px));
+  display: grid; grid-template-columns: repeat(var(--n, 5), 1fr); gap: 4px;
+}
+.nav button { min-height: 58px; border: 0; border-radius: 10px; background: transparent; font-weight: 700; font-size: 0.9rem; cursor: pointer; color: var(--muted); }
+.nav button[aria-current="page"] { background: var(--ink); color: var(--bg); }
+
+/* Semana */
+.consejo { display: grid; gap: 6px; }
+.consejo p.grande { font-size: 1.2rem; font-weight: 700; }
+.dia { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+.dia summary { list-style: none; cursor: pointer; padding: 14px 16px; display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; align-items: center; min-height: 64px; }
+.dia summary::-webkit-details-marker { display: none; }
+.dia .nombre { font-weight: 700; font-size: 1.1rem; }
+.dia summary .chip, .dia summary .num { justify-self: end; }
+.dia .detalle { padding: 0 16px 16px; display: grid; gap: 8px; }
+.dia .linea { display: flex; justify-content: space-between; gap: 12px; border-top: 1px dashed var(--line); padding-top: 8px; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* Avisar */
+.opciones { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+.opciones .btn { min-height: 64px; }
+textarea, input[type="text"], input[type="tel"], select.campo {
+  width: 100%; min-height: 56px; border: 2px solid var(--line); border-radius: 10px; background: var(--surface); padding: 10px 12px;
+}
+textarea { min-height: 110px; resize: vertical; }
+.confirmacion { border: 3px solid var(--ok); background: var(--ok-soft); }
+.confirmacion p.grande { font-size: 1.2rem; font-weight: 700; color: var(--ink); }
+
+/* Ahorro */
+.cifra { font-family: var(--display); font-size: 3.4rem; line-height: 1; color: var(--accent); font-variant-numeric: tabular-nums; }
+
+/* Módulos */
+.modulo { display: grid; gap: 8px; }
+.modulo header { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.muestra { border-left: 4px solid var(--line); padding-left: 12px; color: var(--muted); font-size: 0.95rem; }
+
+/* Ayuda */
+.telefono { font-family: var(--display); font-size: 2rem; font-variant-numeric: tabular-nums; user-select: all; }
+details.faq { border-top: 1px solid var(--line); padding-top: 10px; }
+details.faq summary { cursor: pointer; font-weight: 700; min-height: 44px; display: flex; align-items: center; }
+
+/* Empleado */
+.fichar { min-height: 120px; font-size: 1.6rem; }
+.lista { display: grid; gap: 0; }
+.lista > div { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); }
+.lista > div:first-child { border-top: 0; }
+
+/* Administración */
+.admin { display: grid; gap: 20px; grid-template-columns: 220px minmax(0, 1fr); align-items: start; }
+.admin nav { display: grid; gap: 6px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 44px); }
+.admin nav button { text-align: left; min-height: 48px; border-radius: 10px; border: 0; background: transparent; padding: 8px 12px; font-weight: 700; cursor: pointer; font-size: 1rem; color: var(--muted); }
+.admin nav button[aria-current="page"] { background: var(--ink); color: var(--bg); }
+.admin .contenido { display: grid; gap: 18px; min-width: 0; font-size: 16px; }
+.admin .contenido h1 { font-size: 2rem; }
+@media (max-width: 820px) {
+  .admin { grid-template-columns: 1fr; }
+  .admin nav { position: static; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); }
+}
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: grid; gap: 4px; }
+.kpi .valor { font-family: var(--display); font-size: 2.2rem; line-height: 1; font-variant-numeric: tabular-nums; }
+.medidor { height: 12px; background: var(--bg); border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+.medidor span { display: block; height: 100%; background: var(--accent); }
+.tarea { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; padding: 12px 0; border-top: 1px solid var(--line); }
+.tarea:first-child { border-top: 0; }
+@media (max-width: 560px) { .tarea { grid-template-columns: 1fr; } }
+.tabla-caja { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th { font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+tbody tr { cursor: pointer; }
+tbody tr:hover, tbody tr[aria-selected="true"] { background: var(--accent-soft); }
+td.num, th.num { text-align: right; }
+.formulario { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+.formulario label { display: grid; gap: 6px; font-weight: 700; font-size: 0.95rem; }
+.formulario .completo { grid-column: 1 / -1; }
+.casilla { display: flex !important; gap: 10px; align-items: flex-start; font-weight: 400 !important; }
+.casilla input { width: 22px; height: 22px; margin-top: 2px; flex: none; }
+.aviso-hecho { position: fixed; left: 50%; bottom: 90px; transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 12px 18px; border-radius: 12px; font-weight: 700; z-index: 20; max-width: calc(100% - 32px); }
+.planes { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+.precio { font-family: var(--display); font-size: 2.4rem; line-height: 1; }
+</style>
+
+<div class="banda" role="note">Datos de ejemplo · prototipo sin acceso real</div>
+<main id="app" class="pagina" aria-live="polite"></main>
+<nav id="nav" class="nav" hidden></nav>
+<div id="hecho" class="aviso-hecho" role="status" hidden></div>
+
+<script>
+"use strict";
+
+// ---------- Datos de ejemplo ----------
+const LOCALES = ["Bar La Esquina (ejemplo)", "La Esquina Playa (ejemplo)"];
+const SEMANA = {
+  titulo: "Semana del 5 al 11 de octubre",
+  consejos: [
+    { etiqueta: "Gente", texto: "El sábado vendrá más gente: entre 180 y 220 clientes. El martes, menos.", porque: "Porque el sábado hay partido y hará 24 grados." },
+    { etiqueta: "Qué pedir", texto: "Pide unos 2 barriles más de cerveza para el fin de semana. Refrescos y café, lo normal.", porque: "Porque con calor y partido se venden más cañas por la noche." },
+    { etiqueta: "Personal", texto: "Pon un camarero más el sábado de 20:00 a 24:00. El martes por la tarde basta con uno.", porque: "Porque la noche del sábado será como el sábado del puente de mayo." }
+  ],
+  dias: [
+    { d: "Lunes 5", tiempo: "Nubes, 19°", nivel: "normal", clientes: "90 – 110", franjas: "Más gente al mediodía", cervezas: "entre 60 y 80 cañas", cafes: "entre 90 y 110 cafés" },
+    { d: "Martes 6", tiempo: "Lluvia, 16°", nivel: "menos", clientes: "60 – 80", franjas: "Tarde floja", cervezas: "entre 40 y 55 cañas", cafes: "entre 80 y 100 cafés" },
+    { d: "Miércoles 7", tiempo: "Sol, 21°", nivel: "normal", clientes: "90 – 115", franjas: "Más gente al mediodía", cervezas: "entre 65 y 85 cañas", cafes: "entre 90 y 110 cafés" },
+    { d: "Jueves 8", tiempo: "Sol, 22°", nivel: "normal", clientes: "100 – 125", franjas: "Buena noche", cervezas: "entre 80 y 100 cañas", cafes: "entre 90 y 110 cafés" },
+    { d: "Viernes 9", tiempo: "Sol, 23°", nivel: "mas", clientes: "150 – 180", franjas: "Noche fuerte, de 21:00 a 00:00", cervezas: "entre 140 y 170 cañas", cafes: "entre 80 y 100 cafés" },
+    { d: "Sábado 10", tiempo: "Sol, 24°", nivel: "mas", clientes: "180 – 220", franjas: "Partido a las 21:00. Noche muy fuerte", cervezas: "entre 190 y 230 cañas", cafes: "entre 70 y 90 cafés" },
+    { d: "Domingo 11", tiempo: "Sol, 22°", nivel: "mas", clientes: "130 – 160", franjas: "Mediodía fuerte. El lunes 12 es festivo", cervezas: "entre 110 y 140 cañas", cafes: "entre 90 y 110 cafés" }
+  ]
+};
+const NIVEL = { mas: ["Más gente", "mas"], menos: ["Menos gente", "menos"], normal: ["Normal", "normal"] };
+const MOTIVOS = ["Celebración", "Reserva grande", "Partido", "Cierre", "Otra cosa"];
+
+const MODULOS = [
+  { nombre: "Previsión y mensaje del lunes", estado: "incluido", texto: "Lo que ves en «Semana». Viene con todos los planes." },
+  { nombre: "Turnos según la previsión", estado: "contratado", texto: "Sábado 10: 4 camareros de 20:00 a 24:00 (uno más de lo normal). Tienes 12 reservas; lo normal un sábado son 8, así que puede venir más gente." },
+  { nombre: "Preparación y descongelación", estado: "disponible", texto: "Así se vería: «Viernes 9: saca 3 kg de calamar a las 10:00 y 2 kg de croquetas a las 17:00»." },
+  { nombre: "Escandallos, relevé y mermas", estado: "disponible", texto: "Así se vería: «Ayer se perdieron 1,5 kg de pan y medio barril mal tirado: unos 38 €. El margen de la tapa de ensaladilla bajó al 62 %»." },
+  { nombre: "Empleados: fichaje, turnos y vacaciones", estado: "contratado", texto: "Tus 6 empleados fichan y ven sus turnos y vacaciones en el móvil." }
+];
+
+const CLIENTES = [
+  { nombre: "Bar La Esquina", municipio: "Sevilla", estado: "activo", plan: "Estándar", cuota: 39, acierto: "Bueno", leidos: "4 de 4", datos: "hace 6 h", modulos: ["Turnos", "Empleados"], tpv: "DSTNet" },
+  { nombre: "Cervecería El Grifo", municipio: "Málaga", estado: "riesgo", plan: "Básico", cuota: 29, acierto: "Bueno", leidos: "0 de 3", datos: "hace 8 h", modulos: [], tpv: "DSTNet" },
+  { nombre: "Taberna Los Arcos", municipio: "Córdoba", estado: "sinconexion", plan: "Estándar", cuota: 39, acierto: "Regular", leidos: "3 de 4", datos: "hace 3 días", modulos: ["Turnos"], tpv: "DSTNet" },
+  { nombre: "Café Plaza", municipio: "Granada", estado: "prueba", plan: "Básico", cuota: 0, acierto: "Aún midiendo", leidos: "2 de 2", datos: "hace 5 h", modulos: [], tpv: "DSTNet", fin: "acaba en 4 días" },
+  { nombre: "Grupo Marisma (3 locales)", locales: 3, municipio: "Cádiz", estado: "activo", plan: "Grupo", cuota: 177, acierto: "Bueno", leidos: "12 de 12", datos: "hace 7 h", modulos: ["Turnos", "Preparación", "Escandallos", "Empleados"], tpv: "DSTNet" },
+  { nombre: "Bodega San Telmo", municipio: "Jerez", estado: "prueba", plan: "Estándar", cuota: 0, acierto: "Aún midiendo", leidos: "1 de 2", datos: "hace 6 h", modulos: ["Empleados"], tpv: "DSTNet", fin: "acaba en 12 días" },
+  { nombre: "Bar Triana 21", municipio: "Sevilla", estado: "activo", plan: "Básico", cuota: 29, acierto: "Bueno", leidos: "4 de 4", datos: "hace 7 h", modulos: [], tpv: "DSTNet" }
+];
+const ESTADO = { activo: ["Activo", "ok"], prueba: ["En prueba", "normal"], riesgo: ["Riesgo de baja", "aviso"], sinconexion: ["Sin conexión", "mal"] };
+const PLANES = [
+  { nombre: "Básico", precio: 29, texto: "Previsión, mensaje del lunes, avisos e informe de ahorro para 1 local." },
+  { nombre: "Estándar", precio: 39, texto: "Todo lo del Básico y más detalle por familias y franjas horarias." },
+  { nombre: "Grupo", precio: 59, texto: "Para varios locales. Precio por local." }
+];
+const MODULOS_PAGO = ["Turnos según la previsión", "Preparación y descongelación", "Escandallos, relevé y mermas", "Empleados: fichaje, turnos y vacaciones"];
+
+// ---------- Estado de la página (solo en memoria) ----------
+const estado = {
+  rol: null, entrado: false, pantalla: "semana", local: 0,
+  aviso: { dia: null, motivo: null, confirmado: null },
+  fichajes: [], dentro: false,
+  adminPantalla: "resumen", clienteSel: null
+};
+
+const $app = document.getElementById("app");
+const $nav = document.getElementById("nav");
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+function hecho(texto) {
+  const el = document.getElementById("hecho");
+  el.textContent = texto;
+  el.hidden = false;
+  clearTimeout(hecho.t);
+  hecho.t = setTimeout(() => { el.hidden = true; }, 3200);
+}
+
+function ir(rol) {
+  estado.rol = rol;
+  estado.entrado = rol === "admin";
+  estado.pantalla = rol === "empleado" ? "fichar" : "semana";
+  pintar();
+  window.scrollTo(0, 0);
+}
+
+// ---------- Inicio ----------
+function inicio() {
+  return `
+  <header class="pila">
+    <h1>Previsión para bares</h1>
+    <p class="suave">Prototipo para tocar. Elige cómo quieres entrar.</p>
+  </header>
+  <div class="portada">
+    <button class="btn principal" data-ir="dueno">Soy el dueño o encargado<small>Ver la semana, avisar y ver el ahorro</small></button>
+    <button class="btn" data-ir="empleado">Soy empleado<small>Fichar, ver mis turnos y vacaciones</small></button>
+    <button class="btn" data-ir="admin">Administración<small>Para nosotros: clientes, altas y conectores (mejor en ordenador)</small></button>
+  </div>
+  <p class="suave">Nada de lo que hagas aquí se guarda ni se envía. Los bares, nombres, teléfonos y cifras son inventados.</p>`;
+}
+
+// ---------- Acceso por móvil ----------
+function acceso() {
+  const quien = estado.rol === "dueno" ? "dueño o encargado" : "empleado";
+  return `
+  <header class="pila">
+    <button class="btn pequeno" data-ir="inicio" style="justify-self:start">← Volver</button>
+    <h1>Entrar</h1>
+    <p class="suave">Acceso de ${quien}. Sin contraseña.</p>
+  </header>
+  <form id="f-acceso" class="tarjeta">
+    <label for="movil" class="etiqueta">Tu móvil</label>
+    <input id="movil" type="tel" inputmode="tel" autocomplete="tel" value="600 000 000">
+    <label for="codigo" class="etiqueta">Código que te llega por WhatsApp</label>
+    <input id="codigo" type="text" inputmode="numeric" maxlength="6" value="123456">
+    <p class="suave">En este prototipo el código ya está puesto (123456).</p>
+    <button class="btn principal" type="submit">Entrar</button>
+  </form>`;
+}
+
+// ---------- Dueño ----------
+function cabeceraLocal() {
+  return `
+  <div class="cabecera">
+    <label for="local" class="etiqueta">Local</label>
+    <select id="local">${LOCALES.map((l, i) => `<option value="${i}" ${i === estado.local ? "selected" : ""}>${esc(l)}</option>`).join("")}</select>
+  </div>`;
+}
+
+function avisoIA() {
+  return `<p class="ia">Recomendación hecha con inteligencia artificial. La decisión final es tuya. Tiempo: fuente AEMET (valores de ejemplo).</p>`;
+}
+
+function semana() {
+  return `
+  ${cabeceraLocal()}
+  <h1>${SEMANA.titulo}</h1>
+  <section class="pila" aria-label="Lo más importante">
+    ${SEMANA.consejos.map(c => `
+      <article class="tarjeta consejo">
+        <span class="etiqueta">${c.etiqueta}</span>
+        <p class="grande">${c.texto}</p>
+        <p class="porque">${c.porque}</p>
+      </article>`).join("")}
+    <div class="fila">
+      <button class="btn principal" data-accion="acuerdo">De acuerdo</button>
+      <button class="btn" data-pantalla="avisar">Tengo un evento</button>
+      <button class="btn" data-pantalla="ayuda">Llamadme</button>
+    </div>
+    ${avisoIA()}
+  </section>
+  <section class="pila" aria-label="Día a día">
+    <h2>Día a día</h2>
+    <p class="suave">Toca un día para ver más.</p>
+    ${SEMANA.dias.map(d => `
+      <details class="dia">
+        <summary>
+          <span class="nombre">${d.d}</span>
+          <span class="chip ${NIVEL[d.nivel][1]}">${NIVEL[d.nivel][0]}</span>
+          <span class="suave">${d.tiempo}</span>
+          <span class="num">${d.clientes} clientes</span>
+        </summary>
+        <div class="detalle">
+          <div class="linea"><span>Horas fuertes</span><strong>${d.franjas}</strong></div>
+          <div class="linea"><span>Cervezas</span><strong>${d.cervezas}</strong></div>
+          <div class="linea"><span>Cafés</span><strong>${d.cafes}</strong></div>
+        </div>
+      </details>`).join("")}
+  </section>`;
+}
+
+// Entiende frases sencillas como "el viernes tengo una comunión de 60".
+function entenderTexto(texto) {
+  const t = texto.toLowerCase();
+  const dias = ["lunes", "martes", "miércoles", "miercoles", "jueves", "viernes", "sábado", "sabado", "domingo"];
+  const bonito = { miercoles: "miércoles", sabado: "sábado" };
+  const dia = dias.find(d => t.includes(d));
+  const cosas = [["comunión", "comunión"], ["comunion", "comunión"], ["boda", "boda"], ["bautizo", "bautizo"], ["cumple", "cumpleaños"],
+    ["cena de empresa", "cena de empresa"], ["partido", "partido"], ["cerr", "cierre"], ["reserva", "reserva grande"], ["concierto", "concierto"]];
+  const cosa = cosas.find(([k]) => t.includes(k));
+  const numero = t.match(/\b(\d{1,4})\b/);
+  return {
+    dia: dia ? (bonito[dia] || dia) : null,
+    que: cosa ? cosa[1] : null,
+    personas: numero ? Number(numero[1]) : null
+  };
+}
+
+function avisar() {
+  const a = estado.aviso;
+  if (a.confirmado) {
+    return `
+    <h1>Avisar</h1>
+    <section class="tarjeta confirmacion">
+      <span class="etiqueta">Entendido</span>
+      <p class="grande">${esc(a.confirmado)}</p>
+      <p>Lo tendremos en cuenta en la previsión de esa semana. Si algo no está bien, cámbialo.</p>
+      <div class="fila">
+        <button class="btn principal" data-accion="aviso-ok">Sí, es correcto</button>
+        <button class="btn" data-accion="aviso-reset">Cambiar</button>
+      </div>
+      <p class="ia">Respuesta automática hecha con inteligencia artificial.</p>
+    </section>`;
+  }
+  const diasCortos = SEMANA.dias.map(d => d.d);
+  return `
+  <h1>Avisar</h1>
+  <section class="pila">
+    <h2>1. ¿Qué día?</h2>
+    <div class="opciones">
+      ${diasCortos.map(d => `<button class="btn" data-dia="${d}" aria-pressed="${a.dia === d}">${d}</button>`).join("")}
+    </div>
+  </section>
+  <section class="pila">
+    <h2>2. ¿Qué pasa?</h2>
+    <div class="opciones">
+      ${MOTIVOS.map(m => `<button class="btn" data-motivo="${m}" aria-pressed="${a.motivo === m}" ${a.dia ? "" : "disabled"}>${m}</button>`).join("")}
+    </div>
+    ${a.dia ? "" : `<p class="suave">Primero elige el día.</p>`}
+  </section>
+  <section class="tarjeta">
+    <label for="texto-aviso"><h3>O cuéntalo con tus palabras</h3></label>
+    <textarea id="texto-aviso" placeholder="Por ejemplo: el viernes tengo una comunión de 60"></textarea>
+    <button class="btn principal" data-accion="aviso-texto">Enviar</button>
+    <p class="suave">En la versión real también podrás mandar un audio por WhatsApp.</p>
+  </section>`;
+}
+
+function ahorro() {
+  return `
+  ${cabeceraLocal()}
+  <h1>Ahorro de septiembre</h1>
+  <section class="tarjeta">
+    <span class="etiqueta">Ahorro estimado</span>
+    <p class="cifra">unos 310 €</p>
+    <p class="suave">Cifra de ejemplo. En la versión real solo se muestra cuando hay datos para calcularla.</p>
+  </section>
+  <section class="pila">
+    <h2>De dónde sale</h2>
+    <article class="tarjeta">
+      <span class="etiqueta">Cerveza · unos 180 €</span>
+      <p>Pediste 2 barriles menos que en agosto y no te faltó cerveza ningún día.</p>
+    </article>
+    <article class="tarjeta">
+      <span class="etiqueta">Personal · unos 130 €</span>
+      <p>El martes 15 quitaste un turno de tarde que no hacía falta: 8 horas a unos 16 € la hora.</p>
+    </article>
+  </section>
+  <section class="tarjeta">
+    <h3>Cómo lo calculamos</h3>
+    <p>Comparamos lo que pediste y el personal que pusiste con lo que se vendió de verdad. El precio de la hora lo pones tú.</p>
+  </section>`;
+}
+
+function modulos() {
+  const txt = { incluido: ["Incluido", "ok"], contratado: ["Contratado", "ok"], disponible: ["Disponible", "normal"] };
+  return `
+  ${cabeceraLocal()}
+  <h1>Mis módulos</h1>
+  <p class="suave">Cada módulo se contrata aparte. Los precios aún están por decidir.</p>
+  <section class="pila">
+    ${MODULOS.map((m, i) => `
+      <article class="tarjeta modulo">
+        <header><h3>${m.nombre}</h3><span class="chip ${txt[m.estado][1]}">${txt[m.estado][0]}</span></header>
+        <p class="${m.estado === "disponible" ? "muestra" : ""}">${m.texto}</p>
+        ${m.estado === "disponible" ? `<button class="btn" data-accion="pedir-modulo" data-i="${i}">Quiero información</button>` : ""}
+      </article>`).join("")}
+  </section>
+  ${avisoIA()}`;
+}
+
+function ayuda() {
+  return `
+  <h1>Ayuda</h1>
+  <section class="tarjeta">
+    <span class="etiqueta">Llama o escribe a una persona</span>
+    <p><strong>Marta</strong> (ejemplo), de lunes a sábado de 9:00 a 21:00</p>
+    <p class="telefono">600 000 000</p>
+    <div class="fila">
+      <button class="btn principal" data-copiar="600 000 000">Copiar el número</button>
+      <button class="btn" data-accion="llamadme">Que me llamen</button>
+    </div>
+    <p class="suave">Sirve igual para llamar y para WhatsApp.</p>
+  </section>
+  <section class="tarjeta">
+    <h2>Preguntas frecuentes</h2>
+    <details class="faq"><summary>¿De dónde sacáis los datos?</summary><p>De las ventas de tu caja, cada noche. Solo lo vendido por hora y producto. Nunca nombres de clientes ni de empleados.</p></details>
+    <details class="faq"><summary>¿Alguien más ve mis ventas?</summary><p>No. La IA aprende de muchos bares, pero ningún bar ve los datos de otro.</p></details>
+    <details class="faq"><summary>¿Y si la previsión falla?</summary><p>Te damos siempre un rango, no una cifra exacta. Si una semana fallamos, cuéntanoslo con «Avisar» y la previsión aprende.</p></details>
+    <details class="faq"><summary>¿Tengo que instalar algo?</summary><p>No. Lo instala el técnico de tu caja. A ti te llega un WhatsApp cada lunes.</p></details>
+  </section>`;
+}
+
+// ---------- Empleado ----------
+function fichar() {
+  const hora = new Date().toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
+  return `
+  <h1>Hola, Laura</h1>
+  <p class="suave">Bar La Esquina (ejemplo)</p>
+  <button class="btn principal fichar" data-accion="fichar">${estado.dentro ? "Fichar salida" : "Fichar entrada"}</button>
+  <p class="suave">Ahora son las ${hora}.</p>
+  <section class="tarjeta">
+    <h3>Hoy</h3>
+    <div class="lista">
+      ${estado.fichajes.length ? estado.fichajes.map(f => `<div><span>${f.tipo}</span><strong class="num">${f.hora}</strong></div>`).join("") : `<div><span class="suave">Todavía no has fichado.</span></div>`}
+    </div>
+  </section>
+  <p class="suave">Fichaje de prueba, sin validez legal. El registro de jornada real se hará cumpliendo la ley.</p>`;
+}
+
+function turnos() {
+  const t = [["Lunes 5", "Libre"], ["Martes 6", "12:00 – 17:00"], ["Miércoles 7", "12:00 – 17:00"], ["Jueves 8", "18:00 – 00:00"], ["Viernes 9", "18:00 – 01:00"], ["Sábado 10", "18:00 – 01:00"], ["Domingo 11", "Libre"]];
+  return `
+  <h1>Mis turnos</h1>
+  <p class="suave">Semana del 5 al 11 de octubre</p>
+  <section class="tarjeta"><div class="lista">
+    ${t.map(([d, h]) => `<div><span>${d}</span><strong class="num">${h}</strong></div>`).join("")}
+  </div></section>`;
+}
+
+function vacaciones() {
+  return `
+  <h1>Mis vacaciones</h1>
+  <section class="tarjeta">
+    <span class="etiqueta">Te quedan</span>
+    <p class="cifra">12 días</p>
+  </section>
+  <section class="tarjeta">
+    <h3>Aprobadas</h3>
+    <div class="lista"><div><span>Del 2 al 8 de noviembre</span><span class="chip ok">Aprobadas</span></div></div>
+  </section>
+  <button class="btn principal" data-accion="pedir-vacaciones">Pedir vacaciones</button>`;
+}
+
+// ---------- Administración ----------
+function adminPantalla() {
+  const p = estado.adminPantalla;
+  const menu = [["resumen", "Resumen"], ["clientes", "Clientes"], ["alta", "Dar de alta"], ["conectores", "Conectores"], ["planes", "Planes y módulos"]];
+  const cuerpo = { resumen: adminResumen, clientes: adminClientes, alta: adminAlta, conectores: adminConectores, planes: adminPlanes }[p]();
+  return `
+  <div class="admin">
+    <nav aria-label="Administración">
+      ${menu.map(([k, v]) => `<button data-admin="${k}" ${k === p ? 'aria-current="page"' : ""}>${v}</button>`).join("")}
+      <button data-ir="inicio">Salir</button>
+    </nav>
+    <div class="contenido">${cuerpo}</div>
+  </div>`;
+}
+
+function adminResumen() {
+  const activos = CLIENTES.filter(c => c.estado !== "prueba");
+  const ingresos = activos.reduce((s, c) => s + c.cuota, 0);
+  const locales = CLIENTES.reduce((s, c) => s + (c.locales || 1), 0), equilibrio = 184;
+  const atencion = CLIENTES.filter(c => c.estado === "riesgo" || c.estado === "sinconexion" || c.fin).length;
+  return `
+  <h1>Resumen</h1>
+  <div class="kpis">
+    <div class="kpi"><span class="etiqueta">Ingresos al mes</span><span class="valor num">${ingresos.toLocaleString("es-ES")} €</span></div>
+    <div class="kpi"><span class="etiqueta">Locales conectados</span><span class="valor num">${locales}</span></div>
+    <div class="kpi"><span class="etiqueta">En prueba</span><span class="valor num">${CLIENTES.filter(c => c.estado === "prueba").length}</span></div>
+    <div class="kpi"><span class="etiqueta">Necesitan atención</span><span class="valor num">${atencion}</span></div>
+  </div>
+  <section class="tarjeta">
+    <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><span class="etiqueta">Hacia el punto de equilibrio</span><strong class="num">${locales} de ${equilibrio} locales</strong></div>
+    <div class="medidor" role="img" aria-label="${locales} de ${equilibrio} locales"><span style="width:${Math.round(locales / equilibrio * 100)}%"></span></div>
+  </section>
+  <section class="tarjeta">
+    <h2>Qué hay que hacer hoy</h2>
+    <div>
+      ${CLIENTES.filter(c => c.estado === "sinconexion").map(c => tarea("mal", "Sin datos", `${c.nombre}: el conector no envía datos desde ${c.datos.replace("hace ", "hace ")}.`, "Avisar al técnico", c)).join("")}
+      ${CLIENTES.filter(c => c.estado === "riesgo").map(c => tarea("aviso", "No lee", `${c.nombre}: no ha abierto los últimos ${c.leidos.split(" de ")[1]} mensajes.`, "Llamar", c)).join("")}
+      ${CLIENTES.filter(c => c.fin).map(c => tarea("normal", "Prueba", `${c.nombre}: la prueba gratis ${c.fin}.`, "Ver ficha", c)).join("")}
+    </div>
+  </section>`;
+}
+
+function tarea(tipo, chip, texto, boton, c) {
+  return `<div class="tarea"><span class="chip ${tipo}">${chip}</span><span>${esc(texto)}</span><button class="btn pequeno" data-ficha="${esc(c.nombre)}">${boton}</button></div>`;
+}
+
+function adminClientes() {
+  const sel = CLIENTES.find(c => c.nombre === estado.clienteSel);
+  return `
+  <h1>Clientes</h1>
+  <div class="tabla-caja">
+    <table>
+      <thead><tr><th>Bar</th><th>Estado</th><th>Plan</th><th class="num">Cuota</th><th>Acierto</th><th>Mensajes leídos</th><th>Últimos datos</th><th>Módulos</th></tr></thead>
+      <tbody>
+        ${CLIENTES.map(c => `
+          <tr data-ficha="${esc(c.nombre)}" aria-selected="${sel === c}" tabindex="0">
+            <td><strong>${esc(c.nombre)}</strong><br><span class="suave">${esc(c.municipio)}</span></td>
+            <td><span class="chip ${ESTADO[c.estado][1]}">${ESTADO[c.estado][0]}</span></td>
+            <td>${c.plan}</td>
+            <td class="num">${c.cuota ? c.cuota + " €" : "Gratis"}</td>
+            <td>${c.acierto}</td>
+            <td>${c.leidos}</td>
+            <td>${c.datos}</td>
+            <td>${c.modulos.length ? c.modulos.join(", ") : "—"}</td>
+          </tr>`).join("")}
+      </tbody>
+    </table>
+  </div>
+  ${sel ? ficha(sel) : `<p class="suave">Toca un cliente para ver su ficha.</p>`}`;
+}
+
+function ficha(c) {
+  return `
+  <section class="tarjeta">
+    <header style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center">
+      <h2>${esc(c.nombre)}</h2><span class="chip ${ESTADO[c.estado][1]}">${ESTADO[c.estado][0]}</span>
+    </header>
+    <p class="suave">${esc(c.municipio)} · TPV: ${c.tpv} · Plan ${c.plan}${c.fin ? " · Prueba gratis: " + c.fin : ""}</p>
+    <div class="fila">
+      <button class="btn pequeno" data-accion="mensaje-prueba">Enviar mensaje de prueba</button>
+      <button class="btn pequeno" data-accion="avisar-tecnico">Avisar al técnico del TPV</button>
+    </div>
+    <div class="formulario">
+      <label for="cambiar-plan">Cambiar de plan
+        <select id="cambiar-plan" class="campo">${PLANES.map(p => `<option ${p.nombre === c.plan ? "selected" : ""}>${p.nombre}</option>`).join("")}</select>
+      </label>
+    </div>
+    <h3>Módulos contratados</h3>
+    <div class="pila">
+      ${MODULOS_PAGO.map((m, i) => `<label class="casilla" for="mod-${i}"><input id="mod-${i}" type="checkbox" data-modulo="${m}" ${c.modulos.some(x => m.startsWith(x)) ? "checked" : ""}> ${m}</label>`).join("")}
+    </div>
+  </section>`;
+}
+
+function adminAlta() {
+  return `
+  <h1>Dar de alta un bar</h1>
+  <p class="suave">Al darlo de alta empieza la prueba gratis de 2 meses.</p>
+  <form id="f-alta" class="tarjeta formulario">
+    <label for="a-nombre">Nombre del bar<input id="a-nombre" type="text" required placeholder="Bar Ejemplo"></label>
+    <label for="a-municipio">Municipio<input id="a-municipio" type="text" required placeholder="Sevilla"></label>
+    <label for="a-contacto">Persona de contacto<input id="a-contacto" type="text" required></label>
+    <label for="a-movil">Móvil<input id="a-movil" type="tel" inputmode="tel" required></label>
+    <label for="a-plan">Plan<select id="a-plan" class="campo">${PLANES.map(p => `<option>${p.nombre}</option>`).join("")}</select></label>
+    <label for="a-locales">Número de locales<input id="a-locales" type="text" inputmode="numeric" value="1"></label>
+    <label for="a-tpv">Programa de caja<select id="a-tpv" class="campo"><option>DSTNet</option><option disabled>Ágora (próximamente)</option><option disabled>Hiopos (próximamente)</option><option disabled>Numier (próximamente)</option></select></label>
+    <label class="casilla completo" for="a-rgpd"><input id="a-rgpd" type="checkbox" required> Contrato de protección de datos (RGPD) firmado, incluida la cláusula de uso de las ventas para mejorar la IA común.</label>
+    <div class="completo"><button class="btn principal" type="submit">Dar de alta y empezar la prueba</button></div>
+  </form>`;
+}
+
+function adminConectores() {
+  return `
+  <h1>Conectores</h1>
+  <div class="tabla-caja">
+    <table>
+      <thead><tr><th>Bar</th><th>TPV</th><th>Últimos datos</th><th>Estado</th></tr></thead>
+      <tbody>${CLIENTES.map(c => `<tr data-ficha="${esc(c.nombre)}" tabindex="0"><td>${esc(c.nombre)}</td><td>${c.tpv}</td><td>${c.datos}</td><td><span class="chip ${c.estado === "sinconexion" ? "mal" : "ok"}">${c.estado === "sinconexion" ? "Más de 24 h sin datos" : "Funcionando"}</span></td></tr>`).join("")}</tbody>
+    </table>
+  </div>`;
+}
+
+function adminPlanes() {
+  return `
+  <h1>Planes y módulos</h1>
+  <p class="suave">Planes de referencia del estudio. Prueba gratis de 2 meses y sin permanencia.</p>
+  <div class="planes">
+    ${PLANES.map(p => `<article class="tarjeta"><h3>${p.nombre}</h3><p class="precio num">${p.precio} €</p><p class="suave">al mes por local</p><p>${p.texto}</p></article>`).join("")}
+  </div>
+  <h2>Módulos de pago</h2>
+  <div class="tabla-caja"><table>
+    <thead><tr><th>Módulo</th><th>Precio</th></tr></thead>
+    <tbody>${MODULOS_PAGO.map(m => `<tr><td>${m}</td><td>Por decidir</td></tr>`).join("")}</tbody>
+  </table></div>`;
+}
+
+// ---------- Pintar ----------
+function pintar() {
+  const ancha = estado.rol === "admin";
+  $app.classList.toggle("ancha", ancha);
+  let html;
+  if (!estado.rol) html = inicio();
+  else if (!estado.entrado) html = acceso();
+  else if (estado.rol === "admin") html = adminPantalla();
+  else if (estado.rol === "dueno") html = ({ semana, avisar, ahorro, modulos, ayuda })[estado.pantalla]();
+  else html = ({ fichar, turnos, vacaciones })[estado.pantalla]();
+  $app.innerHTML = html;
+
+  const menu = estado.rol === "dueno" ? [["semana", "Semana"], ["avisar", "Avisar"], ["ahorro", "Ahorro"], ["modulos", "Módulos"], ["ayuda", "Ayuda"]]
+    : estado.rol === "empleado" ? [["fichar", "Fichar"], ["turnos", "Turnos"], ["vacaciones", "Vacaciones"], ["salir", "Salir"]] : null;
+  if (menu && estado.entrado) {
+    $nav.hidden = false;
+    $nav.style.setProperty("--n", menu.length);
+    $nav.innerHTML = menu.map(([k, v]) => `<button data-pantalla="${k}" ${k === estado.pantalla ? 'aria-current="page"' : ""}>${v}</button>`).join("");
+  } else {
+    $nav.hidden = true;
+  }
+}
+
+// ---------- Acciones ----------
+document.addEventListener("click", async e => {
+  const b = e.target.closest("button, tr[data-ficha]");
+  if (!b) return;
+  const d = b.dataset;
+
+  if (d.ir) { d.ir === "inicio" ? (estado.rol = null, pintar()) : ir(d.ir); return; }
+  if (d.pantalla) {
+    if (d.pantalla === "salir") { estado.rol = null; pintar(); return; }
+    estado.pantalla = d.pantalla; pintar(); window.scrollTo(0, 0); return;
+  }
+  if (d.admin) { estado.adminPantalla = d.admin; pintar(); return; }
+  if (d.ficha) { estado.adminPantalla = "clientes"; estado.clienteSel = d.ficha; pintar(); return; }
+  if (d.dia) { estado.aviso.dia = d.dia; estado.aviso.motivo = null; pintar(); return; }
+  if (d.motivo) {
+    estado.aviso.motivo = d.motivo;
+    estado.aviso.confirmado = `${estado.aviso.dia}: ${d.motivo.toLowerCase()}.`;
+    pintar(); return;
+  }
+  if (d.copiar) {
+    try { await navigator.clipboard.writeText(d.copiar); hecho("Número copiado"); }
+    catch { hecho("Mantén pulsado el número para copiarlo"); }
+    return;
+  }
+
+  switch (d.accion) {
+    case "acuerdo": hecho("Apuntado: de acuerdo con la semana"); break;
+    case "llamadme": hecho("Apuntado: Marta te llamará hoy (ejemplo)"); break;
+    case "aviso-ok": estado.aviso = { dia: null, motivo: null, confirmado: null }; estado.pantalla = "semana"; pintar(); hecho("Aviso guardado"); break;
+    case "aviso-reset": estado.aviso = { dia: null, motivo: null, confirmado: null }; pintar(); break;
+    case "aviso-texto": {
+      const texto = document.getElementById("texto-aviso").value.trim();
+      if (!texto) { hecho("Escribe qué pasa, por ejemplo: el viernes tengo una comunión de 60"); break; }
+      const r = entenderTexto(texto);
+      const partes = [r.dia ? r.dia[0].toUpperCase() + r.dia.slice(1) : "Día sin concretar", r.que || "algo especial", r.personas ? `unas ${r.personas} personas` : null].filter(Boolean);
+      estado.aviso.confirmado = partes.join(", ") + ".";
+      pintar(); break;
+    }
+    case "pedir-modulo": hecho("Apuntado: te llamaremos para contártelo"); break;
+    case "fichar": {
+      const hora = new Date().toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
+      estado.fichajes.push({ tipo: estado.dentro ? "Salida" : "Entrada", hora });
+      estado.dentro = !estado.dentro;
+      pintar(); hecho(`Fichaje de ${estado.dentro ? "entrada" : "salida"} a las ${hora} (prueba)`); break;
+    }
+    case "pedir-vacaciones": hecho("Solicitud enviada a tu encargado (ejemplo)"); break;
+    case "mensaje-prueba": hecho("Mensaje de prueba enviado (simulado)"); break;
+    case "avisar-tecnico": hecho("Aviso enviado al técnico del TPV (simulado)"); break;
+  }
+});
+
+document.addEventListener("keydown", e => {
+  if (e.key === "Enter" && e.target.matches("tr[data-ficha]")) e.target.click();
+});
+
+document.addEventListener("change", e => {
+  if (e.target.id === "local") { estado.local = Number(e.target.value); pintar(); hecho(`Ahora ves: ${LOCALES[estado.local]}`); }
+  if (e.target.id === "cambiar-plan") hecho(`Plan cambiado a ${e.target.value} (simulado)`);
+  if (e.target.dataset.modulo) {
+    const c = CLIENTES.find(x => x.nombre === estado.clienteSel);
+    const corto = e.target.dataset.modulo.split(" ")[0].replace(/[:,]/g, "");
+    if (c) c.modulos = e.target.checked ? [...c.modulos, corto] : c.modulos.filter(m => !e.target.dataset.modulo.startsWith(m));
+    pintar();
+    hecho(`${e.target.checked ? "Módulo activado" : "Módulo quitado"}: ${e.target.dataset.modulo} (simulado)`);
+  }
+});
+
+document.addEventListener("submit", e => {
+  e.preventDefault();
+  if (e.target.id === "f-acceso") { estado.entrado = true; pintar(); return; }
+  if (e.target.id === "f-alta") {
+    const v = id => document.getElementById(id).value.trim();
+    const nombre = v("a-nombre");
+    CLIENTES.unshift({ nombre, locales: Number(v("a-locales")) || 1, municipio: v("a-municipio"), estado: "prueba", plan: v("a-plan"), cuota: 0, acierto: "Aún midiendo", leidos: "0 de 0", datos: "esperando al técnico", modulos: [], tpv: v("a-tpv"), fin: "acaba en 61 días" });
+    estado.adminPantalla = "clientes"; estado.clienteSel = nombre;
+    pintar(); hecho(`${nombre} dado de alta. Prueba gratis de 2 meses (simulado)`);
+  }
+});
+
+// Enlaces directos: #dueno, #empleado, #admin
+const directo = (location.hash || "").slice(1);
+if (["dueno", "empleado", "admin"].includes(directo)) { estado.rol = directo; estado.entrado = true; estado.pantalla = directo === "empleado" ? "fichar" : "semana"; }
+pintar();
+</script>
